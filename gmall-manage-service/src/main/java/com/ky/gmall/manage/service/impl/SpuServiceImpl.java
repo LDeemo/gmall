@@ -16,6 +16,7 @@ public class SpuServiceImpl implements SpuService {
     @Autowired
     PmsProductInfoMapper pmsProductInfoMapper;
 
+
     @Override
     public List<PmsProductInfo> spuList(String catalog3Id) {
         PmsProductInfo pmsProductInfo = new PmsProductInfo();
@@ -23,4 +24,11 @@ public class SpuServiceImpl implements SpuService {
         List<PmsProductInfo> pmsProductInfos = pmsProductInfoMapper.select(pmsProductInfo);
         return pmsProductInfos;
     }
+
+    @Override
+    public void saveSpuInfo(PmsProductInfo pmsProductInfo) {
+        pmsProductInfoMapper.insertSelective(pmsProductInfo);
+    }
+
+
 }

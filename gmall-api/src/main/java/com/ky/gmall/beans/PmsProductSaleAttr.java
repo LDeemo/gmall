@@ -23,7 +23,7 @@ public class PmsProductSaleAttr implements Serializable {
 
 
     @Transient
-    List<PmsProductSaleAttrValue> pmsProductSaleAttrValueList;
+    List<PmsProductSaleAttrValue> spuSaleAttrValueList;
 
     public String getId() {
         return id;
@@ -58,10 +58,10 @@ public class PmsProductSaleAttr implements Serializable {
     }
 
     public List<PmsProductSaleAttrValue> getPmsProductSaleAttrValueList() {
-        return pmsProductSaleAttrValueList;
+        return spuSaleAttrValueList;
     }
 
     public void setPmsProductSaleAttrValueList(List<PmsProductSaleAttrValue> pmsProductSaleAttrValueList) {
-        this.pmsProductSaleAttrValueList = pmsProductSaleAttrValueList;
+        this.spuSaleAttrValueList = pmsProductSaleAttrValueList;
     }
 }

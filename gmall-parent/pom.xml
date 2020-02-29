@@ -26,6 +26,7 @@
         <jna.version>5.2.0</jna.version>
         <beanUtils.version>1.9.4</beanUtils.version>
         <spring-support.version>1.0.2</spring-support.version>
+        <fastdfs-client.version>1.29-SNAPSHOT</fastdfs-client.version>
     </properties>
 
     <parent>
@@ -151,6 +152,11 @@
                 <version>${beanUtils.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.csource</groupId>
+                <artifactId>fastdfs-client-java</artifactId>
+                <version>${fastdfs-client.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>

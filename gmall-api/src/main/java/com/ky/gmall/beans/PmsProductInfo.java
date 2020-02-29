@@ -27,9 +27,9 @@ public class PmsProductInfo implements Serializable {
     private  String catalog3Id;
 
     @Transient
-    private List<PmsProductSaleAttr> pmsProductSaleAttrList;
+    private List<PmsProductSaleAttr> spuSaleAttrList;
     @Transient
-    private List<PmsProductImage> pmsProductImageList;
+    private List<PmsProductImage> spuImageList;
 
 
     public String getProductName() {
@@ -41,19 +41,19 @@ public class PmsProductInfo implements Serializable {
     }
 
     public List<PmsProductSaleAttr> getPmsProductSaleAttrList() {
-        return pmsProductSaleAttrList;
+        return spuSaleAttrList;
     }
 
     public void setPmsProductSaleAttrList(List<PmsProductSaleAttr> pmsProductSaleAttrList) {
-        this.pmsProductSaleAttrList = pmsProductSaleAttrList;
+        this.spuSaleAttrList = pmsProductSaleAttrList;
     }
 
     public List<PmsProductImage> getPmsProductImageList() {
-        return pmsProductImageList;
+        return spuImageList;
     }
 
     public void setPmsProductImageList(List<PmsProductImage> pmsProductImageList) {
-        this.pmsProductImageList = pmsProductImageList;
+        this.spuImageList = pmsProductImageList;
     }
 
 
