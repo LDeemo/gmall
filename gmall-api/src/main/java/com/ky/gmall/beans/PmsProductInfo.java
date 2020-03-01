@@ -32,31 +32,6 @@ public class PmsProductInfo implements Serializable {
     private List<PmsProductImage> spuImageList;
 
 
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public List<PmsProductSaleAttr> getPmsProductSaleAttrList() {
-        return spuSaleAttrList;
-    }
-
-    public void setPmsProductSaleAttrList(List<PmsProductSaleAttr> pmsProductSaleAttrList) {
-        this.spuSaleAttrList = pmsProductSaleAttrList;
-    }
-
-    public List<PmsProductImage> getPmsProductImageList() {
-        return spuImageList;
-    }
-
-    public void setPmsProductImageList(List<PmsProductImage> pmsProductImageList) {
-        this.spuImageList = pmsProductImageList;
-    }
-
-
     public String getId() {
         return id;
     }
@@ -65,6 +40,13 @@ public class PmsProductInfo implements Serializable {
         this.id = id;
     }
 
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 
     public String getDescription() {
         return description;
@@ -82,6 +64,21 @@ public class PmsProductInfo implements Serializable {
         this.catalog3Id = catalog3Id;
     }
 
+    public List<PmsProductSaleAttr> getSpuSaleAttrList() {
+        return spuSaleAttrList;
+    }
+
+    public void setSpuSaleAttrList(List<PmsProductSaleAttr> spuSaleAttrList) {
+        this.spuSaleAttrList = spuSaleAttrList;
+    }
+
+    public List<PmsProductImage> getSpuImageList() {
+        return spuImageList;
+    }
+
+    public void setSpuImageList(List<PmsProductImage> spuImageList) {
+        this.spuImageList = spuImageList;
+    }
 }
 
 

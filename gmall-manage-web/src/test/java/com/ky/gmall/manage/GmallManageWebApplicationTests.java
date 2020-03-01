@@ -24,14 +24,14 @@ class GmallManageWebApplicationTests {
 
         TrackerServer trackerServer = trackerClient.getTrackerServer();
         StorageClient storageClient = new StorageClient(trackerServer, null);
-        String orginalFilename="E:/picture/ghs/fuliblxyz.jpg";
+        String orginalFilename="C:/Users/admin/Desktop/phone/02c0efda6e5e35a2.jpg";
         String[] upload_file = storageClient.upload_file(orginalFilename, "jpg", null);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < upload_file.length; i++) {
             sb.append("/"+upload_file[i]);
             System.out.println("s = " + upload_file[i]);
         }
-        System.out.println("http://192.168.64.130"+sb.toString());
+        System.out.println("http://123.57.238.236"+sb.toString());
 
     }
 

@@ -57,11 +57,11 @@ public class PmsProductSaleAttr implements Serializable {
         this.saleAttrName = saleAttrName;
     }
 
-    public List<PmsProductSaleAttrValue> getPmsProductSaleAttrValueList() {
+    public List<PmsProductSaleAttrValue> getSpuSaleAttrValueList() {
         return spuSaleAttrValueList;
     }
 
-    public void setPmsProductSaleAttrValueList(List<PmsProductSaleAttrValue> pmsProductSaleAttrValueList) {
-        this.spuSaleAttrValueList = pmsProductSaleAttrValueList;
+    public void setSpuSaleAttrValueList(List<PmsProductSaleAttrValue> spuSaleAttrValueList) {
+        this.spuSaleAttrValueList = spuSaleAttrValueList;
     }
 }

@@ -2,7 +2,9 @@ package com.ky.gmall.manage.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.ky.gmall.beans.PmsBaseAttrInfo;
+import com.ky.gmall.beans.PmsProductImage;
 import com.ky.gmall.beans.PmsProductInfo;
+import com.ky.gmall.beans.PmsProductSaleAttr;
 import com.ky.gmall.manage.util.PmsUploadUtil;
 import com.ky.gmall.service.SpuService;
 import org.springframework.stereotype.Controller;
@@ -17,6 +19,20 @@ public class SpuController {
 
     @Reference
     SpuService spuService;
+
+    @RequestMapping("spuImageList")
+    @ResponseBody
+    public List<PmsProductImage> spuImageList(String spuId){
+        List<PmsProductImage> pmsProductImageList = spuService.spuImageList(spuId);
+        return pmsProductImageList;
+    }
+
+    @RequestMapping("spuSaleAttrList")
+    @ResponseBody
+    public List<PmsProductSaleAttr> spuSaleAttrList(String spuId){
+        List<PmsProductSaleAttr> pmsProductSaleAttrList = spuService.spuSaleAttrList(spuId);
+        return pmsProductSaleAttrList;
+    }
 
     @RequestMapping("fileUpload")
     @ResponseBody
