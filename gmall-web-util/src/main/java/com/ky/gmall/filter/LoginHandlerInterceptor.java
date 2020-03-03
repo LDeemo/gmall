@@ -1,4 +1,4 @@
-package com.ky.gmall.item;
+package com.ky.gmall.filter;
 
 import org.springframework.web.servlet.HandlerInterceptor;
 

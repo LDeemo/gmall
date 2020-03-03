@@ -12,7 +12,7 @@
 	<body>
 		<div id="max">
 		<header>
-
+		<input type="text" th:value="${skuSaleAttrHashJsonStr}" id="valuesSku" style="display: none"/>
 					<div class="min">
 						<ul class="header_ul_left">
 							<li class="glyphicon glyphicon-home"> <a href="shouye.html" class="aa">首页</a></li>
@@ -1008,8 +1008,8 @@
 		</div>
 	</body>
 
-	<script th:src="@{/js/jquery1.9.js}" type="text/javascript" charset="utf-8"></script>
-	<script th:src="@{/js/js.js}" type="text/javascript" charset="utf-8"></script>
+	<script src="/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="/js/js.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
         function addToCart(obj){
             var canClick = $(obj).attr("canClick");
@@ -1020,36 +1020,31 @@
         }
 
         function switchSkuId() {
-            // 被选中属性
-            var checkDivs = $(".redborder div");
-            var valueIds="";
-            // 拼接成属性值串
-            for (var i = 0; i < checkDivs.length; i++) {
-                var saleAttrValueDiv = checkDivs.eq(i);
-                if(i>0){
-                    valueIds= valueIds+"|";
-                }
-                valueIds=valueIds+saleAttrValueDiv.attr("value");
-            }
-            //页面上的hashjson
-            var valuesSku = $("#valuesSku").attr("value");
-            var valuesSkuJson=JSON.parse(valuesSku);
+        	//获取传过来的属性值
+           	var skuSaleAttrValueJsonStr = $("#valuesSku").val();
+			//获取红色勾选框对象
+           	var saleAttrValueIds = $(".redborder div");
 
-            // 看看hash有没有
-            var skuId= valuesSkuJson[valueIds];
-            // 当前sku
-            var skuIdSelf=$("#skuId").val();
+           	var k = "";
+           	//获取红色勾选框对象的值
+           	$(saleAttrValueIds).each(function (i,saleAttrValueId) {
+				k = k + $(saleAttrValueId).attr("value") + "|";
+		   	});
 
-            // 判断是否跳转
-            if(skuId){
-                if(skuId==skuIdSelf){
-                    $("#cartBtn").attr("class","box-btns-two");
-                }else{
-                    window.location.href="/"+skuId+".html";
-                }
-            }else{
-                $("#cartBtn").attr("class","box-btns-two-off");
-            }
+           	//将传过来的JSON字符串转json对象
+			var skuSaleAttrValueJson = JSON.parse(skuSaleAttrValueJsonStr);
+			//获取skuId
+			var v_skuId = skuSaleAttrValueJson[k];
+
+			//判断是否跳转
+			if (v_skuId){
+				$("#cartBtn").attr("class","box-btns-two");
+				window.location.href = "/"+v_skuId+".html";
+			}else{
+				$("#cartBtn").attr("class","box-btns-two-off");
+			}
+
+
         }
 	</script>
 
