@@ -28,6 +28,7 @@
         <spring-support.version>1.0.2</spring-support.version>
         <fastdfs-client.version>1.29-SNAPSHOT</fastdfs-client.version>
         <commons-pool2.version>2.6.2</commons-pool2.version>
+        <redisson.version>3.12.2</redisson.version>
     </properties>
 
     <parent>
@@ -125,6 +126,12 @@
                 <groupId>tk.mybatis</groupId>
                 <artifactId>mapper-spring-boot-starter</artifactId>
                 <version>${mapper-starter.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-boot-starter</artifactId>
+                <version>${redisson.version}</version>
             </dependency>
 
             <dependency>

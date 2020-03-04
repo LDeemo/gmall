@@ -16,7 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SkuServiceImpl implements SkuService {
@@ -39,19 +41,20 @@ public class SkuServiceImpl implements SkuService {
         Jedis jedis = redisUtil.getJedis();
         //查询缓存
         String skuKey = "sku:"+skuId+":info";
-        String skuJson = jedis.get(skuKey);
+        String skuLock = "sku:" + skuId + ":lock";
 
+        String skuJson = jedis.get(skuKey);
         if (StringUtils.isNotBlank(skuJson)){
             pmsSkuInfo = JSON.parseObject(skuJson, PmsSkuInfo.class);
         }else {
             //如果缓存中没有,查询mysql
-
             //设置分布式锁
-            String OK = jedis.set("sku:" + skuId + ":lock", "1", "nx", "px", 10);
+            String token = UUID.randomUUID().toString(); //设置锁的唯一id,确保在删除锁的时候删的是自己的锁
+
+            String OK = jedis.set(skuLock, token, "nx", "px", 10*1000);//拿到锁的线程有10秒的过期时间
             if (StringUtils.isNotBlank(OK)&&"OK".equals(OK)){
                 //设置成功,有权在10秒的过期时间内访问数据库
                 pmsSkuInfo = getSkuByIdFromDb(skuId);
-
                 if (pmsSkuInfo!=null){
                     //mysql查询结果存入redis
                     jedis.set(skuKey,JSON.toJSONString(pmsSkuInfo));
@@ -61,10 +64,21 @@ public class SkuServiceImpl implements SkuService {
                     jedis.setex(skuKey,60*3,JSON.toJSONString(""));
 
                 }
+
+                //在访问mysql后,将mysql的分布锁释放
+                String lockToken = jedis.get(skuLock);
+                if (StringUtils.isNotBlank(lockToken) && lockToken.equals(token)){
+                    //利用lua脚本,在取得lock的一瞬间删掉
+                    //String script ="if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+                    //jedis.eval(script, Collections.singletonList(lockToken),Collections.singletonList(token));
+                    jedis.del(skuLock); //用token确认删除的是自己的锁
+
+                }
+
             }else {
-                //设置失败,自旋(该线程在睡眠几秒后重新尝试访问)
+                //设置失败,自旋该线程在睡眠几秒后重新尝试访问()
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -74,6 +88,7 @@ public class SkuServiceImpl implements SkuService {
 
         }
 
+        
         //释放连接
         jedis.close();
         return pmsSkuInfo;
