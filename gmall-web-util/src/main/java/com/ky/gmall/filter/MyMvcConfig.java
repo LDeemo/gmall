@@ -18,7 +18,7 @@ public class MyMvcConfig extends WebMvcConfigurerAdapter {
                     public void addInterceptors(InterceptorRegistry registry) {
                         //super.addInterceptors(registry);
                         registry.addInterceptor(new LoginHandlerInterceptor()).addPathPatterns("/**")
-                                .excludePathPatterns("/index.html","/","/user/login","/bootstrap/**","/image/**","/scss/**","/js/**","/img/**");
+                                .excludePathPatterns("/index.html","/**","/user/login","/bootstrap/**","/image/**","/scss/**","/js/**","/img/**");
                     }
                 };
                 return  adapter;

@@ -15,7 +15,7 @@
         <zkclient.version>0.10</zkclient.version>
         <mybatis.version>2.1.1</mybatis.version>
         <nekohtml.version>1.9.20</nekohtml.version>
-        <xml-apis.version>2.0</xml-apis.version>
+        <xml-apis.version>2.0.2</xml-apis.version>
         <batik-ext.version>1.10</batik-ext.version>
         <jsoup.version>1.12.1</jsoup.version>
         <httpclient.version>4.5.10</httpclient.version>
