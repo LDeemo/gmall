@@ -35,46 +35,7 @@ class GmallSearchServiceApplicationTests {
 
     @Test
     void contextLoads() throws IOException, InvocationTargetException, IllegalAccessException {
-        JestClientFactory factory = new JestClientFactory();
-        String connectionUrl = "http://47.104.172.91:9200";
-        factory.setHttpClientConfig(new HttpClientConfig.Builder(connectionUrl).multiThreaded(true).connTimeout(60000).readTimeout(60000).build());
-        JestClient jestClient = factory.getObject();
-
-        //jest的dsl工具
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-
-            //bool
-        BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-            //filter
-        TermQueryBuilder termQueryBuilder = new TermQueryBuilder("skuAttrValueList.valueId","39");
-        boolQueryBuilder.filter(termQueryBuilder);
-            //must
-        MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("skuName","华为");
-        boolQueryBuilder.must(matchQueryBuilder);
-        //query
-        searchSourceBuilder.query(boolQueryBuilder);
-        //from
-        searchSourceBuilder.from(0);
-        //size
-        searchSourceBuilder.size(20);
-        //highlight
-        searchSourceBuilder.highlight();
-
-        String dslStr = searchSourceBuilder.toString();
-
-        System.err.println(dslStr);
-
-        //用api执行复杂查询
-        List<PmsSearchSkuInfo> pmsSearchSkuInfos = new ArrayList<>();
-        Search search = new Search.Builder(dslStr).addIndex("gmall").addType("PmsSkuInfo").build();
-        SearchResult execute = jestClient.execute(search);
-        List<SearchResult.Hit<PmsSearchSkuInfo, Void>> hits = execute.getHits(PmsSearchSkuInfo.class);
-        for (SearchResult.Hit<PmsSearchSkuInfo, Void> hit : hits) {
-            PmsSearchSkuInfo source = hit.source;
-            pmsSearchSkuInfos.add(source);
-        }
-
-        System.out.println(pmsSearchSkuInfos.size());
+        put();
     }
 
     public void put() throws IOException, InvocationTargetException, IllegalAccessException {

@@ -2,6 +2,7 @@ package com.ky.gmall.manage.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.ky.gmall.beans.PmsSkuInfo;
+import com.ky.gmall.service.SearchService;
 import com.ky.gmall.service.SkuService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,8 @@ public class SkuController {
 
     @Reference
     SkuService skuService;
+    @Reference
+    SearchService searchService;
 
     @RequestMapping("saveSkuInfo")
     @ResponseBody
@@ -29,6 +32,7 @@ public class SkuController {
         }
 
         skuService.saveSkuInfo(pmsSkuInfo);
+        searchService.put(pmsSkuInfo);
         return "success";
     }
 
