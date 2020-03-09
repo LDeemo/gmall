@@ -2,6 +2,7 @@ package com.ky.gmall.cart.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.fastjson.JSON;
+import com.ky.gmall.annotations.LoginRequired;
 import com.ky.gmall.beans.OmsCartItem;
 import com.ky.gmall.beans.PmsSkuInfo;
 import com.ky.gmall.service.CartService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +33,18 @@ public class CartController {
     @Reference
     CartService cartService;
 
+
+    @RequestMapping("toTrade")
+    @LoginRequired(loginSuccess = true)
+    public String toTrade(HttpServletResponse response, HttpServletRequest request, ModelMap map, HttpSession session){
+        String memberId = (String)request.getParameter("memberId");
+        String nickName = (String) request.getParameter("nickName");
+
+        return "toTrade";
+    }
+
     @RequestMapping("checkCart")
+    @LoginRequired(loginSuccess = false)
     public String checkCart(String isChecked,String skuId,ModelMap map){
         String memberId = "1";
         //调用服务,修改状态
@@ -62,6 +75,7 @@ public class CartController {
     }
 
     @RequestMapping("cartList")
+    @LoginRequired(loginSuccess = false)
     public String cartList(HttpServletRequest request, HttpServletResponse response, ModelMap map){
         List<OmsCartItem> omsCartItems = new ArrayList<>();
         String memberId = "1";
@@ -89,6 +103,7 @@ public class CartController {
     }
 
     @RequestMapping("addToCart")
+    @LoginRequired(loginSuccess = false)
     public String addToCart(String skuId, int quantity, HttpServletRequest request, HttpServletResponse response){
         List<OmsCartItem> omsCartItems = new ArrayList<>();
         //调用商品服务查询商品信息
