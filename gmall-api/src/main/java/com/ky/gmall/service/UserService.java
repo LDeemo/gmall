@@ -23,4 +23,12 @@ public interface UserService {
     int saveUserReceiveAddress(UmsMemberReceiveAddress umsMemberReceiveAddress);
 
     int updateUserReceiveAddress(UmsMemberReceiveAddress umsMemberReceiveAddress);
+
+    UmsMember login(UmsMember umsMember);
+
+    void addUserToken(String token, String memberId);
+
+    void addOauthUser(UmsMember umsMember);
+
+    UmsMember checkOauthUser(UmsMember umsCheck);
 }

@@ -29,8 +29,8 @@
 			<div id="sign">
  
 				<div class="si_cen">
-					<h2 class="act btn1">用户登录</h2>
-					 
+					<h2 class="act btn1">用户登录</h2><br/>
+					<h3 id="errMsg" style="color: darkred"></h3>
 				</div>
  
 				<div class="si_bom1 tab" style="display: block;">
@@ -51,7 +51,7 @@
 
 						</li>
 						<li class="bri">
-							<a href="">忘记密码</a>
+							<a href="https://api.weibo.com/oauth2/authorize?client_id=414771847&response_type=code&redirect_uri=http://passport.gmall.com:8085/vlogin"><img src="../static/img/weibo.png">新浪微博登录</a>
 						</li>
 						<li class="ent"><button id="btn2" type="button" class="btn2"><a href="javascript:submitLogin();" class="a">登 &nbsp; &nbsp;录</a></button></li>
 
@@ -71,7 +71,7 @@
 
 		
 		<!--底部-->
-		 <input type="text" id="ReturnUrl" th:value="${ReturnUrl}"/>
+		 <input type="text" id="ReturnUrl" th:value="${ReturnUrl}" style="display: none"/>
 		
 	</body>
 	<script language="JavaScript">
@@ -81,11 +81,13 @@
 				var username = $("#username").val();
 				var password = $("#password").val();
 				$.post("login",{username:username,password:password},function (token) {
-					//验证token是否为空或者异常
-					window.location.href=$("#ReturnUrl").val()+"?token="+token;
-					if (token){
-
+					if (token == "fail"){
+						$("#errMsg").val("用户名或密码错误请重新输入!");
+					}else {
+						//验证token是否为空或者异常
+						window.location.href=$("#ReturnUrl").val()+"?token="+token;
 					}
+
 				})
 			}
 

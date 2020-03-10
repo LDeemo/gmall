@@ -37,16 +37,17 @@ public class CartController {
     @RequestMapping("toTrade")
     @LoginRequired(loginSuccess = true)
     public String toTrade(HttpServletResponse response, HttpServletRequest request, ModelMap map, HttpSession session){
-        String memberId = (String)request.getParameter("memberId");
-        String nickName = (String) request.getParameter("nickName");
+        String memberId = (String)request.getAttribute("memberId");
+        String nickname = (String) request.getAttribute("nickname");
 
         return "toTrade";
     }
 
     @RequestMapping("checkCart")
     @LoginRequired(loginSuccess = false)
-    public String checkCart(String isChecked,String skuId,ModelMap map){
-        String memberId = "1";
+    public String checkCart(String isChecked,String skuId,HttpServletRequest request,ModelMap map){
+        String memberId = (String)request.getAttribute("memberId");
+        String nickname = (String) request.getAttribute("nickname");
         //调用服务,修改状态
         OmsCartItem omsCartItem = new OmsCartItem();
         omsCartItem.setMemberId(memberId);
@@ -78,7 +79,8 @@ public class CartController {
     @LoginRequired(loginSuccess = false)
     public String cartList(HttpServletRequest request, HttpServletResponse response, ModelMap map){
         List<OmsCartItem> omsCartItems = new ArrayList<>();
-        String memberId = "1";
+        String memberId = (String)request.getAttribute("memberId");
+        String nickname = (String) request.getAttribute("nickname");
 
         if (StringUtils.isNotBlank(memberId)){
             //已经登录,查询db
@@ -126,7 +128,8 @@ public class CartController {
         omsCartItem.setQuantity(quantity);
 
         //判断用户是否登录
-        String memberId = "1";//"1":
+        String memberId = (String)request.getAttribute("memberId");
+        String nickname = (String) request.getAttribute("nickname");
 
         if(StringUtils.isBlank(memberId)){
             //用户未登录
@@ -162,7 +165,7 @@ public class CartController {
             if (omsCartItemFromDb == null){
                 //说明该用户没有添加过当前商品
                 omsCartItem.setMemberId(memberId);
-                omsCartItem.setMemberNickname("test李华");
+                omsCartItem.setMemberNickname(nickname);
                 cartService.addCart(omsCartItem);
             }else{
                 //该用户添加过当前商品
