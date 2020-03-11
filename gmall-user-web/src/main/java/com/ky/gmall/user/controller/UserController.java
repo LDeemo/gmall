@@ -24,10 +24,10 @@ public class UserController {
         return "hello user";
     }
 
-    @RequestMapping("findAllUser")
+    @RequestMapping("getAllUser")
     @ResponseBody
-    public List<UmsMember> findAllUser(){
-       List<UmsMember> umsMembers = userService.findAllUser();
+    public List<UmsMember> getAllUser(){
+       List<UmsMember> umsMembers = userService.getAllUser();
        return umsMembers;
     }
 
@@ -80,10 +80,10 @@ public class UserController {
         return flag;
     }
 
-    @RequestMapping("findReceiveAddressByMemberId")
+    @RequestMapping("getReceiveAddressByMemberId")
     @ResponseBody
-    public List<UmsMemberReceiveAddress> findReceiveAddressByMemberId(@RequestBody String memberId){
-        List<UmsMemberReceiveAddress> umsMemberReceiveAddresses = userService.findReceiveAddressByMemberId(memberId);
+    public List<UmsMemberReceiveAddress> getReceiveAddressByMemberId(@RequestBody String memberId){
+        List<UmsMemberReceiveAddress> umsMemberReceiveAddresses = userService.getReceiveAddressByMemberId(memberId);
         return umsMemberReceiveAddresses;
     }
 

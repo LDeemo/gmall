@@ -66,14 +66,9 @@ public class SkuServiceImpl implements SkuService {
                 }
 
                 //在访问mysql后,将mysql的分布锁释放
-                String lockToken = jedis.get(skuLock);
-                if (StringUtils.isNotBlank(lockToken) && lockToken.equals(token)){
-                    //利用lua脚本,在取得lock的一瞬间删掉
-                    //String script ="if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
-                    //jedis.eval(script, Collections.singletonList(lockToken),Collections.singletonList(token));
-                    jedis.del(skuLock); //用token确认删除的是自己的锁
-
-                }
+                //利用lua脚本,在取得lock的一瞬间删掉
+                String script ="if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+                jedis.eval(script, Collections.singletonList(skuLock),Collections.singletonList(token));
 
             }else {
                 //设置失败,自旋该线程在睡眠几秒后重新尝试访问()

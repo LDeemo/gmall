@@ -8,8 +8,8 @@ public class OmsCompanyAddress implements Serializable {
     @Id
     private String id;
     private String  addressName;
-    private int sendStatus;
-    private int        receiveStatus;
+    private Integer sendStatus;
+    private Integer        receiveStatus;
     private String name;
     private String         phone;
     private String province;
@@ -33,19 +33,19 @@ public class OmsCompanyAddress implements Serializable {
         this.addressName = addressName;
     }
 
-    public int getSendStatus() {
+    public Integer getSendStatus() {
         return sendStatus;
     }
 
-    public void setSendStatus(int sendStatus) {
+    public void setSendStatus(Integer sendStatus) {
         this.sendStatus = sendStatus;
     }
 
-    public int getReceiveStatus() {
+    public Integer getReceiveStatus() {
         return receiveStatus;
     }
 
-    public void setReceiveStatus(int receiveStatus) {
+    public void setReceiveStatus(Integer receiveStatus) {
         this.receiveStatus = receiveStatus;
     }
 

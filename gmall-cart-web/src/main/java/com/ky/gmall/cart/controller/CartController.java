@@ -34,15 +34,6 @@ public class CartController {
     CartService cartService;
 
 
-    @RequestMapping("toTrade")
-    @LoginRequired(loginSuccess = true)
-    public String toTrade(HttpServletResponse response, HttpServletRequest request, ModelMap map, HttpSession session){
-        String memberId = (String)request.getAttribute("memberId");
-        String nickname = (String) request.getAttribute("nickname");
-
-        return "toTrade";
-    }
-
     @RequestMapping("checkCart")
     @LoginRequired(loginSuccess = false)
     public String checkCart(String isChecked,String skuId,HttpServletRequest request,ModelMap map){
@@ -106,10 +97,11 @@ public class CartController {
 
     @RequestMapping("addToCart")
     @LoginRequired(loginSuccess = false)
-    public String addToCart(String skuId, int quantity, HttpServletRequest request, HttpServletResponse response){
+    public String addToCart(String skuId, int quantity, HttpServletRequest request, HttpServletResponse response, ModelMap modelMap){
         List<OmsCartItem> omsCartItems = new ArrayList<>();
         //调用商品服务查询商品信息
         PmsSkuInfo skuInfo = skuService.getSkuById(skuId);
+        modelMap.put("skuInfo",skuInfo);
 
         //将商品信息封装成购物车信息
         OmsCartItem omsCartItem = new OmsCartItem();
@@ -178,7 +170,7 @@ public class CartController {
 
         }
 
-        return "redirect:/success.html";
+        return "redirect:http://cart.gmall.com:8084/success.html";
     }
 
     private boolean if_cart_exist(List<OmsCartItem> omsCartItems, OmsCartItem omsCartItem) {

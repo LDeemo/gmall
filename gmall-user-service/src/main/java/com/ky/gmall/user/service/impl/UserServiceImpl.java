@@ -26,17 +26,24 @@ public class UserServiceImpl implements UserService {
     RedisUtil redisUtil;
 
     @Override
-    public List<UmsMember> findAllUser() {
-        //List<UmsMember> umsMembers = userMapper.findAllUser();
+    public List<UmsMember> getAllUser() {
+        //List<UmsMember> umsMembers = userMapper.getAllUser();
         List<UmsMember> umsMembers = userMapper.selectAll();
         return umsMembers;
     }
 
     @Override
-    public List<UmsMemberReceiveAddress> findReceiveAddressByMemberId(String memberId) {
+    public List<UmsMemberReceiveAddress> getReceiveAddressByMemberId(String memberId) {
         UmsMemberReceiveAddress umsMemberReceiveAddress = new UmsMemberReceiveAddress();
         umsMemberReceiveAddress.setMemberId(memberId);
         List<UmsMemberReceiveAddress> umsMemberReceiveAddresses = umsMemberReceiveAddressMapper.select(umsMemberReceiveAddress);
+        for (UmsMemberReceiveAddress memberReceiveAddress : umsMemberReceiveAddresses) {
+            String province = memberReceiveAddress.getProvince();
+            String city = memberReceiveAddress.getCity();
+            String region = memberReceiveAddress.getRegion();
+            String detailAddress = memberReceiveAddress.getDetailAddress();
+            memberReceiveAddress.setMemberFullAddress(province+city+region+detailAddress);
+        }
 
         return umsMemberReceiveAddresses;
     }
@@ -82,7 +89,7 @@ public class UserServiceImpl implements UserService {
         try {
             jedis = redisUtil.getJedis();
             if (jedis != null) {
-                String umsMemberStr = jedis.get("user:" + umsMember.getPassword() + ":info");
+                String umsMemberStr = jedis.get("user:" + umsMember.getPassword()+umsMember.getUsername() + ":info");
                 if (StringUtils.isNotBlank(umsMemberStr)) {
                     //密码正确
                     UmsMember umsMemberFromCache = JSON.parseObject(umsMemberStr, UmsMember.class);
@@ -93,7 +100,7 @@ public class UserServiceImpl implements UserService {
             //需要开启数据库
             UmsMember umsMemberFromDb = loginFromDb(umsMember);
             if (umsMemberFromDb != null){
-                jedis.setex("user:" + umsMember.getPassword() + ":info",60*60*24,JSON.toJSONString(umsMemberFromDb));
+                jedis.setex("user:" + umsMember.getPassword()+umsMember.getUsername() + ":info",60*60*24,JSON.toJSONString(umsMemberFromDb));
             }
             return umsMemberFromDb;
 
@@ -115,8 +122,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addOauthUser(UmsMember umsMember) {
+    public UmsMember addOauthUser(UmsMember umsMember) {
         userMapper.insertSelective(umsMember);
+        return  umsMember;
     }
 
     @Override

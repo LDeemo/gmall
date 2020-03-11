@@ -1,6 +1,7 @@
 package com.ky.gmall.beans;
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 public class UmsMemberReceiveAddress implements Serializable {
@@ -10,12 +11,22 @@ public class UmsMemberReceiveAddress implements Serializable {
     private String memberId;
     private String  name;
     private String  phoneNumber;
-    private int defaultStatus;
+    private Integer defaultStatus;
     private String postCode;
     private String province;
     private String city;
     private String region;
     private String detailAddress;
+    @Transient
+    private String memberFullAddress;
+
+    public String getMemberFullAddress() {
+        return memberFullAddress;
+    }
+
+    public void setMemberFullAddress(String memberFullAddress) {
+        this.memberFullAddress = memberFullAddress;
+    }
 
     public String getId() {
         return id;
@@ -49,11 +60,11 @@ public class UmsMemberReceiveAddress implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public int getDefaultStatus() {
+    public Integer getDefaultStatus() {
         return defaultStatus;
     }
 
-    public void setDefaultStatus(int defaultStatus) {
+    public void setDefaultStatus(Integer defaultStatus) {
         this.defaultStatus = defaultStatus;
     }
 

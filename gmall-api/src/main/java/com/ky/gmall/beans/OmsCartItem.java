@@ -26,7 +26,7 @@ public class OmsCartItem implements Serializable{
     private String memberNickname;
     private Date createDate;
     private Date modifyDate;
-    private int deleteStatus;
+    private Integer deleteStatus;
     private String productCategoryId;
     private String productBrand;
     private String productSn;
@@ -179,11 +179,11 @@ public class OmsCartItem implements Serializable{
         this.modifyDate = modifyDate;
     }
 
-    public int getDeleteStatus() {
+    public Integer getDeleteStatus() {
         return deleteStatus;
     }
 
-    public void setDeleteStatus(int deleteStatus) {
+    public void setDeleteStatus(Integer deleteStatus) {
         this.deleteStatus = deleteStatus;
     }
 

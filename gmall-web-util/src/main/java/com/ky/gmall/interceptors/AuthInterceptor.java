@@ -9,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler;
+import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +25,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
      */
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //判断被拦截请求的访问方法的注解(是否是需要拦截的)
+        if (handler instanceof ResourceHttpRequestHandler){
+            return true;
+        }
         HandlerMethod hm = (HandlerMethod)handler;
         //通过反射得到方法的注解
         LoginRequired methodAnnotation = hm.getMethodAnnotation(LoginRequired.class);

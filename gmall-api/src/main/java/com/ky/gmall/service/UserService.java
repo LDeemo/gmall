@@ -8,9 +8,9 @@ import com.ky.gmall.beans.UmsMemberReceiveAddress;
 import java.util.List;
 
 public interface UserService {
-    List<UmsMember> findAllUser();
+    List<UmsMember> getAllUser();
 
-    List<UmsMemberReceiveAddress> findReceiveAddressByMemberId(String memberId);
+    List<UmsMemberReceiveAddress> getReceiveAddressByMemberId(String memberId);
 
     int saveUser(UmsMember umsMember);
 
@@ -28,7 +28,7 @@ public interface UserService {
 
     void addUserToken(String token, String memberId);
 
-    void addOauthUser(UmsMember umsMember);
+    UmsMember addOauthUser(UmsMember umsMember);
 
     UmsMember checkOauthUser(UmsMember umsCheck);
 }
