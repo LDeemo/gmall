@@ -17,7 +17,7 @@ public class PaymentInfo implements Serializable {
     private String  id;
 
     @Column
-    private String outTradeNo;
+    private String orderSn;
 
     @Column
     private String orderId;
@@ -29,7 +29,7 @@ public class PaymentInfo implements Serializable {
     private BigDecimal totalAmount;
 
     @Column
-    private String Subject;
+    private String subject;
 
     @Column
     private String paymentStatus;
@@ -51,13 +51,6 @@ public class PaymentInfo implements Serializable {
         this.id = id;
     }
 
-    public String getOutTradeNo() {
-        return outTradeNo;
-    }
-
-    public void setOutTradeNo(String outTradeNo) {
-        this.outTradeNo = outTradeNo;
-    }
 
     public String getOrderId() {
         return orderId;
@@ -83,12 +76,20 @@ public class PaymentInfo implements Serializable {
         this.totalAmount = totalAmount;
     }
 
+    public String getOrderSn() {
+        return orderSn;
+    }
+
+    public void setOrderSn(String orderSn) {
+        this.orderSn = orderSn;
+    }
+
     public String getSubject() {
-        return Subject;
+        return subject;
     }
 
     public void setSubject(String subject) {
-        Subject = subject;
+        this.subject = subject;
     }
 
     public String getPaymentStatus() {

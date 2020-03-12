@@ -1,8 +1,11 @@
 package com.ky.gmall.beans;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.io.Serializable;
+import java.lang.annotation.Retention;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +14,7 @@ public class OmsOrder implements Serializable {
 
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String memberId;
     private String couponId;

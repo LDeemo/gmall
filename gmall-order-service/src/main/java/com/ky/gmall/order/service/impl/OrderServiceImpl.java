@@ -1,13 +1,21 @@
 package com.ky.gmall.order.service.impl;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
+import com.ky.gmall.beans.OmsOrder;
+import com.ky.gmall.beans.OmsOrderItem;
+import com.ky.gmall.order.mapper.OmsOrderItemMapper;
+import com.ky.gmall.order.mapper.OmsOrderMapper;
+import com.ky.gmall.service.CartService;
 import com.ky.gmall.service.OrderService;
 import com.ky.gmall.util.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
+import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -15,6 +23,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     RedisUtil redisUtil;
+    @Autowired
+    OmsOrderMapper omsOrderMapper;
+    @Autowired
+    OmsOrderItemMapper omsOrderItemMapper;
+    @Reference
+    CartService cartService;
 
     @Override
     public String checkTradeCode(String memberId, String tradeCode) {
@@ -59,7 +73,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public boolean checkPrice() {
-        return false;
+    public void saveOrder(OmsOrder omsOrder) {
+        //保存订单表
+        omsOrderMapper.insertSelective(omsOrder);
+        String orderId = omsOrder.getId();
+        //保存订单详情
+        List<OmsOrderItem> omsOrderItems = omsOrder.getOmsOrderItems();
+        for (OmsOrderItem omsOrderItem : omsOrderItems) {
+            omsOrderItem.setOrderId(orderId);
+            omsOrderItemMapper.insertSelective(omsOrderItem);
+            //删除购物车
+            //cartService.delCart(omsOrderItem.getProductSkuId());
+        }
+    }
+
+    @Override
+    public OmsOrder getOrderByOutTradeNo(String outTradeNo) {
+        OmsOrder omsOrder = new OmsOrder();
+        omsOrder.setOrderSn(outTradeNo);
+        OmsOrder omsOrder1 = omsOrderMapper.selectOne(omsOrder);
+        return omsOrder1;
     }
 }
