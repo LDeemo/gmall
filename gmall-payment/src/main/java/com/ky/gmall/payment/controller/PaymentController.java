@@ -60,11 +60,14 @@ public class PaymentController {
             paymentInfo.setAlipayTradeNo(tradeNo); //支付宝的交易凭证号
             paymentInfo.setCallbackContent(callbackContent); //回调请求字符串
             paymentInfo.setCallbackTime(new Date());
+            //支付成功后,引起系统服务->订单系统的更新->库存服务->物流
+            //调用mq发送支付成功的消息
             //更新用户的支付状态
             paymentService.updatePayment(paymentInfo);
         }
 
-        //支付成功后,引起系统服务->订单系统的更新->库存服务->物流
+
+
 
         return "finish";
     }

@@ -4,15 +4,19 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.ky.gmall.beans.OmsOrder;
 import com.ky.gmall.beans.OmsOrderItem;
+import com.ky.gmall.mq.ActiveMQUtil;
 import com.ky.gmall.order.mapper.OmsOrderItemMapper;
 import com.ky.gmall.order.mapper.OmsOrderMapper;
 import com.ky.gmall.service.CartService;
 import com.ky.gmall.service.OrderService;
 import com.ky.gmall.util.RedisUtil;
+import org.apache.activemq.command.ActiveMQMapMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
+import tk.mybatis.mapper.entity.Example;
 
+import javax.jms.*;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
@@ -27,8 +31,8 @@ public class OrderServiceImpl implements OrderService {
     OmsOrderMapper omsOrderMapper;
     @Autowired
     OmsOrderItemMapper omsOrderItemMapper;
-    @Reference
-    CartService cartService;
+    @Autowired
+    ActiveMQUtil activeMQUtil;
 
     @Override
     public String checkTradeCode(String memberId, String tradeCode) {
@@ -94,4 +98,50 @@ public class OrderServiceImpl implements OrderService {
         OmsOrder omsOrder1 = omsOrderMapper.selectOne(omsOrder);
         return omsOrder1;
     }
+
+    @Override
+    public void updateOrder(OmsOrder omsOrder) {
+        Example e = new Example(OmsOrder.class);
+        e.createCriteria().andEqualTo("orderSn",omsOrder.getOrderSn());
+
+        OmsOrder orderUpdate = new OmsOrder();
+        orderUpdate.setStatus(1);
+
+
+        //发送一个订单已支付的队列,提供给库存消费
+        Connection connection = null;
+        Session session = null;
+        try {
+            connection = activeMQUtil.getConnectionFactory().createConnection();
+            //第一个值表示是否使用事务,true代表使用,第二个值用于选择
+            session = connection.createSession(true,Session.SESSION_TRANSACTED);
+        } catch (JMSException ex) {
+            ex.printStackTrace();
+        }
+        try {
+            Queue payment_success_queue = session.createQueue("ORDER_PAY_QUEUE");
+            MessageProducer producer = session.createProducer(payment_success_queue);
+            MapMessage mapMessage = new ActiveMQMapMessage();//hash结构的message
+
+            omsOrderMapper.updateByExampleSelective(orderUpdate,e);
+            producer.send(mapMessage);
+
+            session.commit();
+        }catch (Exception ex){
+            //消息回滚
+            try {
+                session.rollback();
+            } catch (JMSException exc) {
+                exc.printStackTrace();
+            }
+        }finally {
+            try {
+                connection.close();
+            } catch (JMSException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+    }
+
 }
