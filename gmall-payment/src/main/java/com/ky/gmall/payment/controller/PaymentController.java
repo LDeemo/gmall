@@ -50,10 +50,10 @@ public class PaymentController {
         String subject = request.getParameter("subject");
         String callbackContent = request.getQueryString();
 
-
         //通过支付宝的paramsMap进行签名验证,2.0版本的接口将paramsMap参数去掉,导致同步请求没法验签
         if (StringUtils.isNotBlank(sign)){
             //验签成功
+            //更新用户的支付状态
             PaymentInfo paymentInfo = new PaymentInfo();
             paymentInfo.setOrderSn(outTradeNo);
             paymentInfo.setPaymentStatus("已支付");
@@ -62,12 +62,8 @@ public class PaymentController {
             paymentInfo.setCallbackTime(new Date());
             //支付成功后,引起系统服务->订单系统的更新->库存服务->物流
             //调用mq发送支付成功的消息
-            //更新用户的支付状态
             paymentService.updatePayment(paymentInfo);
         }
-
-
-
 
         return "finish";
     }
@@ -119,9 +115,12 @@ public class PaymentController {
         paymentInfo.setSubject("测试商品一件");
         paymentInfo.setTotalAmount(totalAmount);
         paymentService.savePaymentInfo(paymentInfo);
+
+        //向消息中间件发送一个检查支付状态(支付服务消费)的延迟消息队列
+        paymentService.sendDelayPaymentResultCheckQueue(outTradeNo,5);
+
+
         //提交请求到支付宝
-
-
         return form;
     }
 

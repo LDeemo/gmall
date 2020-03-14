@@ -128,6 +128,9 @@ public class SkuServiceImpl implements SkuService {
             pmsSkuImageMapper.insertSelective(pmsSkuImage);
         }
 
+        //发出商品的缓存同步消息,在sku模块中监听
+        //发出商品的搜索引擎的同步消息,在search模块中监听
+
     }
 
     @Override

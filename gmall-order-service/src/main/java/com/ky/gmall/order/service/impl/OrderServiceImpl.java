@@ -2,6 +2,7 @@ package com.ky.gmall.order.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
 import com.ky.gmall.beans.OmsOrder;
 import com.ky.gmall.beans.OmsOrderItem;
 import com.ky.gmall.mq.ActiveMQUtil;
@@ -11,6 +12,7 @@ import com.ky.gmall.service.CartService;
 import com.ky.gmall.service.OrderService;
 import com.ky.gmall.util.RedisUtil;
 import org.apache.activemq.command.ActiveMQMapMessage;
+import org.apache.activemq.command.ActiveMQTextMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
@@ -121,10 +123,22 @@ public class OrderServiceImpl implements OrderService {
         try {
             Queue payment_success_queue = session.createQueue("ORDER_PAY_QUEUE");
             MessageProducer producer = session.createProducer(payment_success_queue);
-            MapMessage mapMessage = new ActiveMQMapMessage();//hash结构的message
+            //MapMessage mapMessage = new ActiveMQMapMessage();//hash结构的message
+            TextMessage textMessage = new ActiveMQTextMessage();
+
+            //查询订单的对象,转化成json字符串,存入ORDER_PAY_QUEUE的消息队列
+            OmsOrder omsOrderParam = new OmsOrder();
+            omsOrderParam.setOrderSn(omsOrder.getOrderSn());
+            OmsOrder omsOrderResponse = omsOrderMapper.selectOne(omsOrderParam);
+
+            OmsOrderItem omsOrderItemParam = new OmsOrderItem();
+            omsOrderItemParam.setOrderSn(omsOrder.getOrderSn());
+            List<OmsOrderItem> select = omsOrderItemMapper.select(omsOrderItemParam);
+            omsOrderResponse.setOmsOrderItems(select);
+            textMessage.setText(JSON.toJSONString(omsOrderResponse));
 
             omsOrderMapper.updateByExampleSelective(orderUpdate,e);
-            producer.send(mapMessage);
+            producer.send(textMessage);
 
             session.commit();
         }catch (Exception ex){
