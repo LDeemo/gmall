@@ -17,8 +17,7 @@ public class SkuController {
 
     @Reference
     SkuService skuService;
-    @Reference
-    SearchService searchService;
+
 
     @RequestMapping("saveSkuInfo")
     @ResponseBody
@@ -32,7 +31,7 @@ public class SkuController {
         }
 
         skuService.saveSkuInfo(pmsSkuInfo);
-        searchService.put(pmsSkuInfo);
+
         return "success";
     }
 

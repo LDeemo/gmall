@@ -10,12 +10,15 @@ import com.ky.gmall.manage.mapper.PmsSkuAttrValueMapper;
 import com.ky.gmall.manage.mapper.PmsSkuImageMapper;
 import com.ky.gmall.manage.mapper.PmsSkuInfoMapper;
 import com.ky.gmall.manage.mapper.PmsSkuSaleAttrValueMapper;
+import com.ky.gmall.mq.ActiveMQUtil;
 import com.ky.gmall.service.SkuService;
 import com.ky.gmall.util.RedisUtil;
+import org.apache.activemq.command.ActiveMQMapMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
+import javax.jms.*;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +37,8 @@ public class SkuServiceImpl implements SkuService {
     PmsSkuImageMapper pmsSkuImageMapper;
     @Autowired
     RedisUtil redisUtil;
+    @Autowired
+    ActiveMQUtil activeMQUtil;
 
     @Override
     public PmsSkuInfo getSkuById(String skuId) {
@@ -128,8 +133,43 @@ public class SkuServiceImpl implements SkuService {
             pmsSkuImageMapper.insertSelective(pmsSkuImage);
         }
 
-        //发出商品的缓存同步消息,在sku模块中监听
         //发出商品的搜索引擎的同步消息,在search模块中监听
+        Connection connection = null;
+        Session session = null;
+        try {
+            connection = activeMQUtil.getConnectionFactory().createConnection();
+            //第一个值表示是否使用事务,true代表使用,第二个值用于选择
+            session = connection.createSession(true,Session.SESSION_TRANSACTED);
+        } catch (JMSException ex) {
+            ex.printStackTrace();
+        }
+
+        try {
+            //保存成功后发出mq,让es同步
+            Queue sku_save_queue = session.createQueue("SKU_SAVE_QUEUE");
+            MessageProducer producer = session.createProducer(sku_save_queue);
+
+            MapMessage mapMessage = new ActiveMQMapMessage();//hash结构的message
+            mapMessage.setString("pmsSkuInfo",JSON.toJSONString(pmsSkuInfo));
+
+            producer.send(mapMessage);
+
+            session.commit();
+
+        }catch (Exception ex){
+            //消息回滚
+            try {
+                session.rollback();
+            } catch (JMSException exc) {
+                exc.printStackTrace();
+            }
+        }finally {
+            try {
+                connection.close();
+            } catch (JMSException ex) {
+                ex.printStackTrace();
+            }
+        }
 
     }
 

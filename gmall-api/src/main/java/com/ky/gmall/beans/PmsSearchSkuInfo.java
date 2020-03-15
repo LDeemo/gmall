@@ -14,7 +14,7 @@ public class PmsSearchSkuInfo implements Serializable {
     private String catalog3Id;
     private BigDecimal price;
     private String skuDefaultImg;
-    private double hotScore;
+    private Double hotScore;
     private String productId;
     private List<PmsSkuAttrValue> skuAttrValueList;
 
@@ -66,11 +66,11 @@ public class PmsSearchSkuInfo implements Serializable {
         this.skuDefaultImg = skuDefaultImg;
     }
 
-    public double getHotScore() {
+    public Double getHotScore() {
         return hotScore;
     }
 
-    public void setHotScore(double hotScore) {
+    public void setHotScore(Double hotScore) {
         this.hotScore = hotScore;
     }
 
